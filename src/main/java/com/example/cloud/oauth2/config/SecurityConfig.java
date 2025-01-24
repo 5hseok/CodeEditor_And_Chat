@@ -71,8 +71,10 @@ public class SecurityConfig {
         // 경로 별 인가
         http
                 .authorizeHttpRequests((auth) -> auth
+
                     .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                     .anyRequest().permitAll());
+
 
         // 세션 설정 - JWT 방식으로 인증정보를 다룰거라 세션 상태를 STATELESS로 관리해야 함.
         http

@@ -26,10 +26,13 @@ public class JWTFilter extends OncePerRequestFilter {
         // 1. cookie에 접근해 Authorization의 값(순수토큰)을 꺼내온다.
         String authorization = null;
         Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            System.out.println(cookie.getName());
-            if (cookie.getName().equals("Authorization")) {
-                authorization = cookie.getValue();
+
+        if(cookies != null){
+            for (Cookie cookie : cookies) {
+                System.out.println(cookie.getName());
+                if (cookie.getName().equals("Authorization")) {
+                    authorization = cookie.getValue();
+                }
             }
         }
 
