@@ -1,20 +1,28 @@
 package com.example.cloud.chat.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.messaging.simp.stomp.StompCommand;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 @EnableWebSocketMessageBroker
 @Configuration
+@Slf4j
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     // 이 주소로 요청이 왔을 때 Socket 연결을 허용받을 수 있음 (CORS 설정)
     public void registerStompEndpoints(StompEndpointRegistry registry){
         registry.addEndpoint("/chat")
-                .setAllowedOrigins("http://localhost:3000")
+                .setAllowedOrigins("*")
 ////                 SockJS를 사용할 수 있도록 설정
 ////                 SockJS는 클라이언트와 서버 간의 연결이 계속 설정되어있는 지를 지속적으로 확인할 수 있고
 ////                 연결이 끊어진 경우 다시 연결할 수 있도록 해줌.
@@ -35,6 +43,24 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.enableSimpleBroker("/subscribe");
         // 클라이언트에서 메시지를 송신할 Endpoint Prefix 설정
         registry.setApplicationDestinationPrefixes("/publish");
+    }
+
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.interceptors(new ChannelInterceptor() {
+            @Override
+            public Message<?> preSend(Message<?> message, MessageChannel channel) {
+                StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+
+                if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
+                    String destination = accessor.getDestination();
+                    String sessionId = accessor.getSessionId();
+                    log.info("New subscription to channel: {} by session: {}", destination, sessionId);
+                }
+
+                return message;
+            }
+        });
     }
 
 }

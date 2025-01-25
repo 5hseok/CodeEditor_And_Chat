@@ -11,13 +11,13 @@ import java.time.LocalDateTime;
 @Document(collection = "chat_messages")
 public class MongoChatMessage {
     @Id
-    private String id;
-    private String roomId;
+    private Long id;
+    private Long roomId;
     private String sender;
     private String message;
     private LocalDateTime timestamp;
 
-    public MongoChatMessage(String roomId, String sender, String message) {
+    public MongoChatMessage(Long roomId, String sender, String message) {
         this.roomId = roomId;
         this.sender = sender;
         this.message = message;

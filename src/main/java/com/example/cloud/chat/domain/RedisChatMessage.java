@@ -11,13 +11,13 @@ import java.time.LocalDateTime;
 @RedisHash(value = "ChatMessage", timeToLive = 90000) // TTL 설정 (25시간)
 public class RedisChatMessage {
     @Id
-    private String id;
-    private String roomId;
+    private Long id;
+    private Long roomId;
     private String sender;
     private String message;
     private LocalDateTime timestamp;
 
-    public RedisChatMessage(String roomId, String sender, String message) {
+    public RedisChatMessage(Long roomId, String sender, String message) {
         this.roomId = roomId;
         this.sender = sender;
         this.message = message;

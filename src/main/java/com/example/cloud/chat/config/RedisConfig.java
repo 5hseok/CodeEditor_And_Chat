@@ -1,6 +1,10 @@
 package com.example.cloud.chat.config;
 
 import com.example.cloud.chat.service.RedisSubscriber;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,13 +14,15 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
+@Slf4j
 public class RedisConfig {
 
-    private static final String TOPIC_NAME = "chatTopic";
+    private static final String TOPIC_NAME = "topic";
 
     @Value("${spring.data.redis.host}")
     private String host;
@@ -38,6 +44,7 @@ public class RedisConfig {
     @Bean
     // RedisSubscriber 클래스를 사용해 메시지를 처리하는 리스너 설정
     public MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) {
+        log.info("listenerAdapter");
         return new MessageListenerAdapter(subscriber, "onMessage");
     }
 
@@ -46,14 +53,20 @@ public class RedisConfig {
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(connectionFactory);
-        //Key를 String으로 저장
+
+        // Jackson ObjectMapper 설정 (LocalDateTime 지원 추가)
+        ObjectMapper objectMapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule())  // Java 8 날짜/시간 지원
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);  // 타임스탬프 대신 ISO 형식 사용
+
+        // 새로운 생성자 방식으로 ObjectMapper 적용
+        Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(objectMapper, Object.class);
+
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        // Hash Key도 String으로 저장
+        redisTemplate.setValueSerializer(serializer);
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        // Value를 JSON으로 저장
-        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
-        // Hash Value를 JSON으로 저장
-        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
+        redisTemplate.setHashValueSerializer(serializer);
+
         return redisTemplate;
     }
 

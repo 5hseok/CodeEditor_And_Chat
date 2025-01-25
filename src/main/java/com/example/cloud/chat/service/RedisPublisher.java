@@ -9,6 +9,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -16,8 +18,9 @@ import org.springframework.stereotype.Service;
 public class RedisPublisher {
     private final RedisTemplate<String, Object> redisTemplate;
 
-    public void publish(ChannelTopic topic, ChatMessageDTO chatMessage){
+    public void publish(ChannelTopic topic, Long roomId, ChatMessageDTO chatMessage){
         log.info("Publishing message to topic: {}", topic.getTopic());
-        redisTemplate.convertAndSend(topic.getTopic(), chatMessage);
+        ChatMessageDTO message = new ChatMessageDTO(roomId, chatMessage.getSender(), chatMessage.getMessage());
+        redisTemplate.convertAndSend(topic.getTopic(), message);
     }
 }
