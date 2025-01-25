@@ -44,4 +44,6 @@ jwj.pem
 src/main/resources/application-API-KEY.properties
 
 # properties
-src/main/resources/*
+src/main/resources/application-local.properties
+src/main/resources/application-dev.properties
+src/main/resources/application-prod.properties
