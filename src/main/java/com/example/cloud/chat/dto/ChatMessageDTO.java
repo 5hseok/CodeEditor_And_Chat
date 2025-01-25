@@ -9,17 +9,17 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class ChatMessageDTO {
-    private Long roomId;
+    private String studyName;
     private String sender;
     private String message;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime timestamp = LocalDateTime.now();
+    private LocalDateTime timestamp;
 
-    public ChatMessageDTO(Long roomId, String sender, String message) {
-        this.roomId = roomId;
+    public ChatMessageDTO(String studyName, String sender, String message, LocalDateTime timestamp) {
+        this.studyName = studyName;
         this.sender = sender;
         this.message = message;
-        this.timestamp = LocalDateTime.now();
+        this.timestamp = timestamp;
     }
 }
