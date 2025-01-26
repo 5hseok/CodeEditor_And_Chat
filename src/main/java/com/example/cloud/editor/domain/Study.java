@@ -20,7 +20,7 @@ public class Study {
 
     private String studyName;
 
-    @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "study", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<StudyUser> studyUsers = new ArrayList<>();
 
     @Builder
