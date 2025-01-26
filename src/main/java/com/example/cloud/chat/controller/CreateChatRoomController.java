@@ -1,5 +1,6 @@
 package com.example.cloud.chat.controller;
 
+import com.example.cloud.chat.dto.AddMemberRequestDTO;
 import com.example.cloud.chat.dto.CreateChatRoomRequestDTO;
 import com.example.cloud.chat.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
@@ -23,5 +24,12 @@ public class CreateChatRoomController {
                                  CreateChatRoomRequestDTO requestDTO) {
 
         chatRoomService.createChatRoom(requestDTO);
+    }
+
+    @PostMapping("/member")
+    public void addMember(@RequestBody
+                          AddMemberRequestDTO requestDTO) {
+
+        chatRoomService.addMember(requestDTO);
     }
 }

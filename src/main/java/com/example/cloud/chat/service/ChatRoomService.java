@@ -1,6 +1,7 @@
 package com.example.cloud.chat.service;
 
 import com.example.cloud.chat.domain.MongoChatRoom;
+import com.example.cloud.chat.dto.AddMemberRequestDTO;
 import com.example.cloud.chat.dto.CreateChatRoomRequestDTO;
 import com.example.cloud.chat.repository.MongoChatRoomRepository;
 import com.example.cloud.oauth2.entity.SocialUserEntity;
@@ -48,6 +49,30 @@ public class ChatRoomService {
                 });
 
         log.info("Chat room created: {}", chatRoom);
+
+        mongoChatRoomRepository.save(chatRoom);
+    }
+
+    // 채팅방 멤버 추가
+    public void addMember(AddMemberRequestDTO requestDTO) {
+
+        // 채팅방이 이미 존재하는 지 확인
+        log.info("Checking if chat room already exists: {}", requestDTO.getStudyName() + ":" + requestDTO.getCreatedAt());
+        MongoChatRoom chatRoom = mongoChatRoomRepository.findByChatRoomName("study:" + requestDTO.getStudyName() + ":" + requestDTO.getCreatedAt())
+                .orElseThrow(() -> new IllegalArgumentException("해당 채팅방이 존재하지 않습니다."));
+
+        log.info("Adding new member to chat room: {}", requestDTO.getStudyName() + ":" + requestDTO.getCreatedAt());
+
+        List<SocialUserEntity> userList = new ArrayList<>();
+        for (String memberEmail : requestDTO.getMemberEmail()) {
+            SocialUserEntity user = userRepository.findByEmail(memberEmail)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 사용자 정보가 존재하지 않습니다."));
+            userList.add(user);
+        }
+
+        chatRoom.getMembers().addAll(userList);
+
+        log.info("Member added to chat room: {}", chatRoom);
 
         mongoChatRoomRepository.save(chatRoom);
     }

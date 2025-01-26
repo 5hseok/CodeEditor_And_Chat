@@ -50,6 +50,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             SocialUserDTO socialUserDTO = new SocialUserDTO();
             socialUserDTO.setUsername(username);
+            socialUserDTO.setId(socialUserEntity.getId());
+            socialUserDTO.setEmail(oAuth2Response.getEmail());
             socialUserDTO.setRole("ROLE_USER");
 
             return new CustomOAuth2User(socialUserDTO);
@@ -57,10 +59,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             existData.setEmail(existData.getEmail());
 
             userRepository.save(existData);
-
             SocialUserDTO socialUserDTO = new SocialUserDTO();
             socialUserDTO.setUsername(existData.getUsername());
-            socialUserDTO.setUsername(existData.getUsername());
+            socialUserDTO.setId(existData.getId());
+            socialUserDTO.setEmail(existData.getEmail());
             socialUserDTO.setRole(existData.getRole());
 
             return new CustomOAuth2User(socialUserDTO);
