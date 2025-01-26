@@ -13,12 +13,18 @@ jobs:
     
       - name: Code Checkout
         uses: actions/checkout@v3
-        
+
       - name: Set PROPERTIES file
         run: |
           mkdir -p ./src/main/resources
           echo "${{ secrets.APPLICATION_PROD_PROPERTIES }}" | base64 --decode > ./src/main/resources/application-docker.properties
           find src
+
+      - name: 권한 부여
+        run: chmod +x gradlew
+
+      - name: 그래들 빌드
+        run: ./gradlew clean build
     
       - name: SSH 키 저장
         run: |
