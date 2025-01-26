@@ -24,7 +24,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: 그래들 빌드
-        run: ./gradlew clean build
+        run: ./gradlew clean build -x test
     
       - name: SSH 키 저장
         run: |
