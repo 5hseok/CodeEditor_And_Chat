@@ -29,7 +29,12 @@ public class CodeService {
     private final ProblemRepository problemRepository;
     private final TestCaseRepository testCaseRepository;
 
-    // 코드 기록 조회
+    /**
+     * 코드 기록 조회
+     * @param userId
+     * @param date
+     * @return
+     */
     public CodeResponse getCode(Long userId, LocalDate date) {
         SocialUserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
@@ -61,8 +66,14 @@ public class CodeService {
                 .build();
     }
 
+    /**
+     * 코드 실행
+     * @param userId
+     * @param request
+     * @return
+     */
     public SubmitResponse executeCode(Long userId, CodeRequest request) {
-        // 1. 문제 및 테스트 케이스 조회
+
         Problem problem = problemRepository.findById(request.problemId())
                 .orElseThrow(() -> new IllegalArgumentException("문제를 찾을 수 없습니다."));
         List<TestCase> testCases = testCaseRepository.findByProblemId(request.problemId());
@@ -77,13 +88,13 @@ public class CodeService {
                         .isCorrect(false)
                         .build());
 
-        // 2. 도커 컨테이너 생성
+        // 도커 컨테이너 생성
         String containerId = dockerService.createContainer(request.language());
         boolean isSolve = true;
         StringBuilder resultMessages = new StringBuilder();
 
         try {
-            // 3. 테스트 케이스 실행
+            // 테스트 케이스 실행
             for (TestCase testCase : testCases) {
                 String result = dockerService.executeCode(
                         containerId,
@@ -107,7 +118,7 @@ public class CodeService {
             userProblem.checkAnswer(isSolve);
             userProblemRepository.save(userProblem);
 
-            // 5. 결과 반환
+            // 결과 반환
             return SubmitResponse.builder()
                     .code(201)
                     .message(isSolve ? "문제를 성공적으로 해결했습니다." : "문제 풀이에 실패했습니다.")
@@ -118,7 +129,7 @@ public class CodeService {
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException("코드 실행 중 오류 발생: " + e.getMessage());
         } finally {
-            // 6. 컨테이너 정리
+            // 컨테이너 정리
             dockerService.removeContainer(containerId);
         }
     }

@@ -14,6 +14,11 @@ public class ProblemService {
 
     private final ProblemRepository problemRepository;
 
+    /**
+     * 문제 조회
+     * @param date
+     * @return
+     */
     public ProblemRequest getProblemByDate(LocalDate date) {
         Problem problem = problemRepository.findByProblemDate(date)
                 .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 문제가 없습니다."));
