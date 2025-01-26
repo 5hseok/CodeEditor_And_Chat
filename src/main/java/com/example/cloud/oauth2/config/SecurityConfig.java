@@ -33,24 +33,24 @@ public class SecurityConfig {
         // csrf 비활성화
         http.csrf((auth) -> auth.disable());
 
-        // cors 설정
-        http.cors(corsCustomizser -> corsCustomizser.configurationSource(new CorsConfigurationSource() {
-            @Override
-            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                CorsConfiguration configuration = new CorsConfiguration();
-
-                configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-                configuration.setAllowedMethods(Collections.singletonList("*"));
-                configuration.setAllowCredentials(true);
-                configuration.setAllowedHeaders(Collections.singletonList("*"));
-                configuration.setMaxAge(3600L);
-
-                configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
-                configuration.setExposedHeaders(Collections.singletonList("Authorization"));
-
-                return configuration;
-            }
-        }));
+//        // cors 설정
+//        http.cors(corsCustomizser -> corsCustomizser.configurationSource(new CorsConfigurationSource() {
+//            @Override
+//            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+//                CorsConfiguration configuration = new CorsConfiguration();
+//
+//                configuration.setAllowedOrigins(Collections.singletonList("*"));
+//                configuration.setAllowedMethods(Collections.singletonList("*"));
+//                configuration.setAllowCredentials(true);
+//                configuration.setAllowedHeaders(Collections.singletonList("*"));
+//                configuration.setMaxAge(3600L);
+//
+//                configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
+//                configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+//
+//                return configuration;
+//            }
+//        }));
 
         // FormLogin 비활성화
         http.formLogin((auth) -> auth.disable());
@@ -71,7 +71,6 @@ public class SecurityConfig {
         // 경로 별 인가
         http
                 .authorizeHttpRequests((auth) -> auth
-
                     .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                     .anyRequest().permitAll());
 

@@ -8,6 +8,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Optional;
 
 @Component
 public class JWTUtil {
@@ -22,6 +23,10 @@ public class JWTUtil {
     // 받은 토큰에서 username 확인 메소드. 검증할 로직에서 호출할 것임.
     public String getUsername(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("username", String.class);
+    }
+
+    public Optional<String> getUserEmail(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("email", String.class).describeConstable();
     }
 
     // 받은 토큰에서 role 확인 메소드. 검증할 로직에서 호출할 것임.

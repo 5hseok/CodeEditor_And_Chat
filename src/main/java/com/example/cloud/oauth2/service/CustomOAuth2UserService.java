@@ -44,26 +44,23 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (existData == null) {
             SocialUserEntity socialUserEntity = new SocialUserEntity();
             socialUserEntity.setUsername(username);
-            socialUserEntity.setName(oAuth2Response.getName());
             socialUserEntity.setEmail(oAuth2Response.getEmail());
             socialUserEntity.setRole("ROLE_USER");
             userRepository.save(socialUserEntity);
 
             SocialUserDTO socialUserDTO = new SocialUserDTO();
             socialUserDTO.setUsername(username);
-            socialUserDTO.setName(oAuth2Response.getName());
             socialUserDTO.setRole("ROLE_USER");
 
             return new CustomOAuth2User(socialUserDTO);
         } else {
             existData.setEmail(existData.getEmail());
-            existData.setName(existData.getName());
 
             userRepository.save(existData);
 
             SocialUserDTO socialUserDTO = new SocialUserDTO();
             socialUserDTO.setUsername(existData.getUsername());
-            socialUserDTO.setName(existData.getName());
+            socialUserDTO.setUsername(existData.getUsername());
             socialUserDTO.setRole(existData.getRole());
 
             return new CustomOAuth2User(socialUserDTO);

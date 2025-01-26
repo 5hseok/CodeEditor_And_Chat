@@ -7,6 +7,5 @@ import lombok.Setter;
 @Setter
 public class SocialUserDTO {
     private String username;
-    private String name;
     private String role;
 }
