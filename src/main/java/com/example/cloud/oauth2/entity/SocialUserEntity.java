@@ -1,13 +1,12 @@
 package com.example.cloud.oauth2.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.example.cloud.editor.domain.StudyUser;
+import com.example.cloud.editor.domain.UserProblem;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -19,7 +18,25 @@ public class SocialUserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String username;
+
+    private String name;
+
+    @Column(nullable = false, unique = true)
     private String email;
+
     private String role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserProblem> userProblems = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<StudyUser> studyUsers = new ArrayList<>();
+
+    @Builder
+    public SocialUserEntity(String username, String email) {
+        this.username = username;
+        this.email = email;
+    }
 }
