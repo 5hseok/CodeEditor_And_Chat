@@ -17,7 +17,7 @@ jobs:
       - name: Set PROPERTIES file
         run: |
           mkdir -p ./src/main/resources
-          echo "${{ secrets.APPLICATION_PROD_PROPERTIES }}" | base64 --decode > ./src/main/resources/application-docker.properties
+          echo "${{ secrets.APPLICATION_PROD_PROPERTIES }}" | base64 --decode > ./src/main/resources/application-local.properties
           find src
 
       - name: 권한 부여
