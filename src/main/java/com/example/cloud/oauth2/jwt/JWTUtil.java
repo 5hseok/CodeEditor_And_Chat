@@ -29,6 +29,10 @@ public class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("email", String.class).describeConstable();
     }
 
+    public Long getUserId(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("id", Long.class);
+    }
+
     // 받은 토큰에서 role 확인 메소드. 검증할 로직에서 호출할 것임.
     public String getRole(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
@@ -40,8 +44,10 @@ public class JWTUtil {
     }
 
     // jwt 생성 메소드
-    public String createJwt(String username, String role, Long expiredMs) {
+    public String createJwt(Long id, String username, String email, String role, Long expiredMs) {
         return Jwts.builder()
+                .claim("id", id)
+                .claim("email", email)
                 .claim("username", username)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))

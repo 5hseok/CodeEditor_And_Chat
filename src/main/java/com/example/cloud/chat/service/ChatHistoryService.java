@@ -2,8 +2,10 @@ package com.example.cloud.chat.service;
 
 import com.example.cloud.chat.domain.MongoChatMessage;
 import com.example.cloud.chat.domain.MongoChatRoom;
+import com.example.cloud.chat.dto.ChatHistoryResponseDTO;
 import com.example.cloud.chat.repository.MongoChatRepository;
 import com.example.cloud.chat.repository.MongoChatRoomRepository;
+import com.example.cloud.oauth2.entity.SocialUserEntity;
 import com.example.cloud.oauth2.jwt.JWTUtil;
 import com.example.cloud.oauth2.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -28,7 +30,7 @@ public class ChatHistoryService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final JWTUtil jwtUtil;
 
-    public List<Object> getChatHistory(String studyName, String selectDate, String token) {
+    public ChatHistoryResponseDTO getChatHistory(String studyName, String selectDate, String token) {
         log.info("Getting chat history for study: {} on date: {}", studyName, selectDate);
 
         // MongoDB에서 특정 studyName과 selectDate 토픽 정보를 가지는 채팅방 정보와 채팅방 내역을 조회
@@ -38,20 +40,25 @@ public class ChatHistoryService {
         log.info("Getting chat room info for room: {}", chatRoomName);
         MongoChatRoom mongoChatRoom = mongoChatRoomRepository.findByChatRoomName(chatRoomName)
                 .orElseThrow(() -> new IllegalArgumentException("해당 채팅방 정보가 존재하지 않습니다."));
-//
-//        // 요청한 사용자가 채팅방에 속해 있는지 확인
-////        jwtUtil.validateToken(token)
-////                .orElseThrow(() -> new IllegalArgumentException("토큰 정보가 유효하지 않습니다."));
-//        String userEmail = jwtUtil.getUserEmail(token)
+
+        // 요청한 사용자가 채팅방에 속해 있는지 확인
+//        jwtUtil.validateToken(token)
 //                .orElseThrow(() -> new IllegalArgumentException("토큰 정보가 유효하지 않습니다."));
-//
-//        SocialUserEntity user = userRepository.findByEmail(userEmail)
-//                .orElseThrow(() -> new IllegalArgumentException("해당 사용자 정보가 존재하지 않습니다."));
-//
-//        // 속해 있지 않다면 예외 처리
-//        if (!mongoChatRoom.getMembers().contains(user)) {
-//            throw new IllegalArgumentException("해당 사용자는 채팅방에 속해 있지 않습니다.");
-//        }
+        String userEmail = jwtUtil.getUserEmail(token)
+                .orElseThrow(() -> new IllegalArgumentException("토큰 정보가 유효하지 않습니다."));
+
+        SocialUserEntity user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자 정보가 존재하지 않습니다."));
+
+        // 속해 있지 않다면 예외 처리
+        log.info("mongo chat room members: {}", mongoChatRoom.getMembers().get(2).getEmail());
+        if (mongoChatRoom.getMembers().stream()
+                .anyMatch(m -> m.getEmail().trim().equalsIgnoreCase(user.getEmail().trim()))) {
+            log.info("User is in the chat room");
+        } else {
+            log.info("User not in chat room: {}", user.getEmail());
+            throw new IllegalArgumentException("해당 사용자는 채팅방에 속해 있지 않습니다.");
+        }
 
         log.info("Chat room info: {}", mongoChatRoom);
 
@@ -60,7 +67,9 @@ public class ChatHistoryService {
                 List<Object> chatMessages = redisTemplate.opsForList().range("chat:" + studyName + ":" + selectDate, 0, -1);
                 log.info("Total Message in Redis : {}", chatMessages);
                 if (chatMessages != null && !chatMessages.isEmpty()) {
-                    return chatMessages;
+                    return ChatHistoryResponseDTO.builder()
+                            .chatHistory(chatMessages)
+                            .build();
                 }
 
                 log.info("No chat messages found in Redis");
@@ -73,7 +82,9 @@ public class ChatHistoryService {
                 log.info("Chat messages found in MongoDB: {}", mongoChatMessages);
 
                 if (mongoChatMessages != null && !mongoChatMessages.isEmpty()) {
-                    return Collections.singletonList(mongoChatMessages);
+                    return ChatHistoryResponseDTO.builder()
+                            .chatHistory(Collections.singletonList(mongoChatMessages))
+                            .build();
                 }
 
                 log.info("No chat messages found in MongoDB");

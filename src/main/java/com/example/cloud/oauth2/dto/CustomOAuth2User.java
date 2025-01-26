@@ -35,12 +35,15 @@ public class CustomOAuth2User implements OAuth2User {
         return collection;
     }
 
-    @Override
-    public String getName() {
-        return socialUserDTO.getUsername();
+    public String getEmail() {
+        return socialUserDTO.getEmail();
+    }
+    public Long getId(){
+        return socialUserDTO.getId();
     }
 
-    public String getUsername() {
+    @Override
+    public String getName() {
         return socialUserDTO.getUsername();
     }
 }

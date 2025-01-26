@@ -69,9 +69,14 @@ public class JWTFilter extends OncePerRequestFilter {
         //      - 토큰에서 username과 role을 획득하여 새 UserDTO를 만들어 얻은 username과 role을 넣은 후 UserDetails에 담는다.
         String username = jwtUtil.getUsername(token);
         String role = jwtUtil.getRole(token);
+        String email = jwtUtil.getUserEmail(token)
+                .orElseThrow(() -> new IllegalArgumentException("토큰 정보가 유효하지 않습니다."));
+        Long id = jwtUtil.getUserId(token);
 
         SocialUserDTO socialUserDTO = new SocialUserDTO();
         socialUserDTO.setUsername(username);
+        socialUserDTO.setId(id);
+        socialUserDTO.setEmail(email);
         socialUserDTO.setRole(role);
 
         CustomOAuth2User customOAuth2User = new CustomOAuth2User(socialUserDTO);
