@@ -49,7 +49,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private Cookie createCookie(String key, String value) {
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(60*60*60);
-        // cookie.setSecure(true) // <- https 적용 시 활성화
+         cookie.setSecure(true); // <- https 적용 시 활성화
         cookie.setPath("/");
         cookie.setHttpOnly(true);
 
