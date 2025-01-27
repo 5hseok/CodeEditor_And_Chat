@@ -17,6 +17,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -30,27 +31,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        // csrf 비활성화
-        http.csrf((auth) -> auth.disable());
-
-        // cors 설정
-        http.cors(corsCustomizser -> corsCustomizser.configurationSource(new CorsConfigurationSource() {
-            @Override
-            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                CorsConfiguration configuration = new CorsConfiguration();
-
-                configuration.setAllowedOrigins(Collections.singletonList("*"));
-                configuration.setAllowedMethods(Collections.singletonList("*"));
-                configuration.setAllowCredentials(true);
-                configuration.setAllowedHeaders(Collections.singletonList("*"));
-                configuration.setMaxAge(3600L);
-
-                configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
-                configuration.setExposedHeaders(Collections.singletonList("Authorization"));
-
-                return configuration;
-            }
-        }));
+        http.csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration configuration = new CorsConfiguration();
+                    configuration.setAllowedOrigins(List.of("https://codablesite.netlify.app"));
+                    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+                    configuration.setAllowCredentials(true);
+                    configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+                    configuration.setExposedHeaders(List.of("Authorization", "Set-Cookie"));
+                    return configuration;
+                }));
 
         // FormLogin 비활성화
         http.formLogin((auth) -> auth.disable());
