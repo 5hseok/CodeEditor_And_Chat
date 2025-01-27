@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class SocialUserEntity {
@@ -20,8 +20,6 @@ public class SocialUserEntity {
 
     @Column(nullable = false)
     private String username;
-
-    private String name;
 
     @Column(nullable = false, unique = true)
     private String email;

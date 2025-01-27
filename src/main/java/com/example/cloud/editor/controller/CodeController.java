@@ -4,7 +4,8 @@ import com.example.cloud.editor.dto.request.CodeRequest;
 import com.example.cloud.editor.dto.response.CodeResponse;
 import com.example.cloud.editor.dto.response.SubmitResponse;
 import com.example.cloud.editor.service.CodeService;
-import com.example.cloud.oauth2.jwt.JWTUtil;
+import com.example.cloud.global.jwt.JwtTokenProvider;
+import com.example.cloud.oauth2.entity.SocialUserEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,7 +21,7 @@ import java.time.LocalDate;
 public class CodeController {
 
     private final CodeService codeService;
-    private final JWTUtil jwtUtil;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Operation(summary = "문제와 코드 기록 조회", description = "특정 날짜의 문제와 유저가 작성한 코드를 조회합니다.")
     @GetMapping
@@ -28,7 +29,8 @@ public class CodeController {
             @RequestHeader("Authorization") String token,
             @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
     ) {
-        Long userId = jwtUtil.getUserId(token);
+        Long userId = jwtTokenProvider.getUserFromJwt(token);
+
         CodeResponse codeResponse = codeService.getCode(userId, date);
         return ResponseEntity.ok(codeResponse);
     }
@@ -39,7 +41,7 @@ public class CodeController {
             @RequestHeader("Authorization") String token,
             @RequestBody CodeRequest codeRequest
     ) {
-        Long userId = jwtUtil.getUserId(token);
+        Long userId = jwtTokenProvider.getUserFromJwt(token);
         SubmitResponse response = codeService.executeCode(userId, codeRequest);
         return ResponseEntity.ok(response);
     }
