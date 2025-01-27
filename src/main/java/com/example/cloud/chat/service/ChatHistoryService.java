@@ -5,8 +5,10 @@ import com.example.cloud.chat.domain.MongoChatRoom;
 import com.example.cloud.chat.dto.ChatHistoryResponseDTO;
 import com.example.cloud.chat.repository.MongoChatRepository;
 import com.example.cloud.chat.repository.MongoChatRoomRepository;
+import com.example.cloud.global.exception.BusinessException;
+import com.example.cloud.global.exception.message.ErrorMessage;
+import com.example.cloud.global.jwt.JwtTokenProvider;
 import com.example.cloud.oauth2.entity.SocialUserEntity;
-import com.example.cloud.oauth2.jwt.JWTUtil;
 import com.example.cloud.oauth2.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +30,7 @@ public class ChatHistoryService {
     private final MongoChatRepository mongoChatRepository;
     private final UserRepository userRepository;
     private final RedisTemplate<String, Object> redisTemplate;
-    private final JWTUtil jwtUtil;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public ChatHistoryResponseDTO getChatHistory(String studyName, String selectDate, String token) {
         log.info("Getting chat history for study: {} on date: {}", studyName, selectDate);
@@ -44,11 +46,9 @@ public class ChatHistoryService {
         // 요청한 사용자가 채팅방에 속해 있는지 확인
 //        jwtUtil.validateToken(token)
 //                .orElseThrow(() -> new IllegalArgumentException("토큰 정보가 유효하지 않습니다."));
-        String userEmail = jwtUtil.getUserEmail(token)
-                .orElseThrow(() -> new IllegalArgumentException("토큰 정보가 유효하지 않습니다."));
 
-        SocialUserEntity user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자 정보가 존재하지 않습니다."));
+        SocialUserEntity user = userRepository.findById(jwtTokenProvider.getUserFromJwt(token))
+                .orElseThrow(() -> new BusinessException(ErrorMessage.NOT_FOUND_USER));
 
         // 속해 있지 않다면 예외 처리
         log.info("mongo chat room members: {}", mongoChatRoom.getMembers().get(2).getEmail());
