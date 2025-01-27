@@ -30,7 +30,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 ////                 그러나, SockJS는 WebSocket보다 느리고, WebSocket의 모든 기능을 지원하지 않음.
 ////                 그리고 클라이언트와 서버가 지속적으로 heartbeat 신호를 주고 받기 때문에 매우 작은
 ////                 데이터이긴 하지만 트래픽이 많아진다면서버에 부하를 줄 수 있음.
-//                 .withSockJS()
+                 .withSockJS()
         ;
     }
 
