@@ -42,7 +42,8 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String token = jwtUtil.createJwt(id, username, email, role, 60*100*60*60L);
         System.out.println("생성된 jwt 토큰 : " + token);
 
-        response.addCookie(createCookie("Authorization", token));
+//        response.addCookie(createCookie("Authorization", token));
+        response.setHeader("Authorization", token);
         response.sendRedirect("https://codablesite.netlify.app");
     }
 
@@ -52,6 +53,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
          cookie.setSecure(true); // <- https 적용 시 활성화
         cookie.setPath("/");
         cookie.setHttpOnly(true);
+        cookie.setAttribute("SameSite", "None"); // Cross-Origin 요청을 허용하려면 필수
 
         System.out.println("Cookie: " + cookie.getValue());
 
