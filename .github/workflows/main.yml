@@ -42,16 +42,15 @@ jobs:
 
       - name: 이미지 build, push
         run: |
-          docker build -t jwj9127/test:latest .
-          docker push jwj9127/test:latest
+          docker build -t jwj9127/test:0.0.1 .
+          docker push jwj9127/test:0.0.1
       
       - name: Docker 이미지 빌드 및 배포
         run: |
           ssh -i JWJ.pem -T ubuntu@ec2-3-34-197-183.ap-northeast-2.compute.amazonaws.com << 'EOF'
               docker stop nervous_dirac || true
-              docker rm nervous_dirac || true
   
-              docker pull jwj9127/test:latest
+              docker pull jwj9127/test:0.0.1
   
               docker run -d \
               --name spring_app \
