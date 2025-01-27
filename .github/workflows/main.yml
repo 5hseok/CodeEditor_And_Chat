@@ -54,7 +54,7 @@ jobs:
               docker pull jwj9127/test:latest
   
               docker run -d \
-              --name nervous_dirac \
+              --name spring_app \
               -v ~/BE/src/main/resources:/config \
               -p 8080:8080 \
               jwj9127/test:latest
