@@ -43,7 +43,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         System.out.println("생성된 jwt 토큰 : " + token);
 
         response.addCookie(createCookie("Authorization", token));
-        response.sendRedirect("http://localhost:3000");
+        response.sendRedirect("https://codablesite.netlify.app/");
     }
 
     private Cookie createCookie(String key, String value) {
