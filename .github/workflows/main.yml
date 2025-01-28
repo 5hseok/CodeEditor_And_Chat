@@ -50,6 +50,7 @@ jobs:
           ssh -i JWJ.pem -T ubuntu@ec2-3-34-197-183.ap-northeast-2.compute.amazonaws.com << 'EOF'
               docker stop nervous_dirac || true
               docker stop spring_app || true
+              docker rm spring_app || true
   
               docker pull jwj9127/test:0.0.1
   
