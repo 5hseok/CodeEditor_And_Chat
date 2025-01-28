@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
                     configuration.setAllowedOrigins(List.of("https://codablesite.netlify.app"));
-                    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+                    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     configuration.setAllowCredentials(true);
                     configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
                     configuration.setExposedHeaders(List.of("Authorization", "Set-Cookie"));
