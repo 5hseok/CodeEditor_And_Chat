@@ -20,7 +20,7 @@ public class ChatHistoryController {
     @GetMapping("/history")
     public ChatHistoryResponseDTO getChatHistory(@RequestParam String studyName,
                                                  @RequestParam String selectDate,
-                                                 @CookieValue("Authorization") String token) {
+                                                 @RequestHeader("Authorization") String token) {
         return chatHistoryService.getChatHistory(studyName, selectDate, token);
     }
 }

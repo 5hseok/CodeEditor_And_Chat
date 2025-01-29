@@ -21,7 +21,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     // 이 주소로 요청이 왔을 때 Socket 연결을 허용받을 수 있음 (CORS 설정)
     public void registerStompEndpoints(StompEndpointRegistry registry){
-        registry.addEndpoint("/chat")
+        registry.addEndpoint("/ws/chat")
                 .setAllowedOrigins("*")
 ////                 SockJS를 사용할 수 있도록 설정
 ////                 SockJS는 클라이언트와 서버 간의 연결이 계속 설정되어있는 지를 지속적으로 확인할 수 있고
