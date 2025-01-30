@@ -1,4 +1,4 @@
-package com.example.cloud.editor.domain;
+package com.example.cloud.study.domain;
 
 import java.io.Serializable;
 import java.util.Objects;
