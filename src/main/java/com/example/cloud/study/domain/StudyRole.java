@@ -1,4 +1,4 @@
-package com.example.cloud.editor.domain;
+package com.example.cloud.study.domain;
 
 public enum StudyRole {
     LEADER,

@@ -12,6 +12,7 @@ import com.example.cloud.editor.repository.UserProblemRepository;
 import com.example.cloud.oauth2.entity.SocialUserEntity;
 import com.example.cloud.oauth2.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CodeService {
 
     private final DockerService dockerService;
@@ -36,6 +38,9 @@ public class CodeService {
      * @return
      */
     public CodeResponse getCode(Long userId, LocalDate date) {
+        if(userId == null) {
+            log.error("userId is null");
+        }
         SocialUserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
         Problem problem = problemRepository.findByProblemDate(date)

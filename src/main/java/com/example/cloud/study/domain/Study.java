@@ -1,4 +1,4 @@
-package com.example.cloud.editor.domain;
+package com.example.cloud.study.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;

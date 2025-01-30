@@ -1,6 +1,6 @@
-package com.example.cloud.editor.repository;
+package com.example.cloud.study.repository;
 
-import com.example.cloud.editor.domain.Study;
+import com.example.cloud.study.domain.Study;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface StudyRepository extends JpaRepository<Study, Long> {
