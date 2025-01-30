@@ -3,7 +3,7 @@ package com.example.cloud.study.dto;
 import java.util.List;
 
 public record StudyInfoDto(
-        Long userId,
+        Long studyId,
         List<StudyMemberDto> memberList
 ) {
 }
