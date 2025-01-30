@@ -22,9 +22,9 @@ public class DockerService {
      */
     public String createContainer(String lang) {
         GenericContainer<?> container = switch (lang.toLowerCase()) {
-            case "java" -> new GenericContainer<>("openjdk:22-ea-16-jdk")
+            case "java" -> new GenericContainer<>("openjdk:17-jdk-slim")
                     .withCommand("sleep", "infinity");
-            case "python" -> new GenericContainer<>("python:3.10.13-bookworm")
+            case "python" -> new GenericContainer<>("python:3.10-slim")
                     .withCommand("sleep", "infinity");
             default -> throw new IllegalArgumentException("Unsupported language: " + lang);
         };
