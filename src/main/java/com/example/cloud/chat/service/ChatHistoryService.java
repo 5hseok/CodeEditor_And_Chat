@@ -51,7 +51,6 @@ public class ChatHistoryService {
                 .orElseThrow(() -> new BusinessException(ErrorMessage.NOT_FOUND_USER));
 
         // 속해 있지 않다면 예외 처리
-        log.info("mongo chat room members: {}", mongoChatRoom.getMembers().get(2).getEmail());
         if (mongoChatRoom.getMembers().stream()
                 .anyMatch(m -> m.getEmail().trim().equalsIgnoreCase(user.getEmail().trim()))) {
             log.info("User is in the chat room");
