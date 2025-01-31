@@ -1,7 +1,13 @@
 package com.example.cloud.chat.config;
 
+import com.example.cloud.global.jwt.JwtTokenProvider;
+import com.example.cloud.global.jwt.JwtValidationType;
+import com.example.cloud.global.jwt.UserAuthentication;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.config.ChannelRegistration;
@@ -22,7 +28,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     // 이 주소로 요청이 왔을 때 Socket 연결을 허용받을 수 있음 (CORS 설정)
     public void registerStompEndpoints(StompEndpointRegistry registry){
         registry.addEndpoint("/ws/chat")
-                .setAllowedOrigins("https://codablesite.netlify.app", "https://jjangxy.github.io")
 ////                 SockJS를 사용할 수 있도록 설정
 ////                 SockJS는 클라이언트와 서버 간의 연결이 계속 설정되어있는 지를 지속적으로 확인할 수 있고
 ////                 연결이 끊어진 경우 다시 연결할 수 있도록 해줌.
@@ -31,6 +36,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 ////                 그리고 클라이언트와 서버가 지속적으로 heartbeat 신호를 주고 받기 때문에 매우 작은
 ////                 데이터이긴 하지만 트래픽이 많아진다면서버에 부하를 줄 수 있음.
 //                 .withSockJS()
+
         ;
     }
 
