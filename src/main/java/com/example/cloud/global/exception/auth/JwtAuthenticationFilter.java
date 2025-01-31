@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,7 @@ import static com.example.cloud.global.jwt.JwtValidationType.VALID_JWT;
 // 요청에서 Jwt를 검증하는 커스텀 필터 클래스
 @Component // 필터를 빈으로 등록
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter  { // 요청이 주어졌을때 한번만 수행되는 필터를 상속받음
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -35,6 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter  { // 요청�
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
         try {
             final String token = getJwtFromRequest(request);
+            log.info("token:" + token);
             if (jwtTokenProvider.validateToken(token) == VALID_JWT) { // 추출한 토큰의 정보가 VALID_JWT일 경우 사용자 정보 추출
                 Long memberId = jwtTokenProvider.getUserFromJwt(token);
 
