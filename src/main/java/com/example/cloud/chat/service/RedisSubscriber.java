@@ -49,8 +49,8 @@ public class RedisSubscriber implements MessageListener {
             try{
                 // 채팅 내역을 Redis에 저장
                 String redisKey = "chat:" + chatMessage.getStudyName() + ":" + chatMessage.getTimestamp().toLocalDate().toString();
-
-                redisTemplate.opsForList().rightPush(redisKey,chatMessage);
+                String serializedMessage = objectMapper.writeValueAsString(chatMessage);
+                redisTemplate.opsForList().rightPush(redisKey,serializedMessage);
                 // 메시지 TTL 설정 (10분 후 삭제)
                 redisTemplate.expire(redisKey, Duration.ofMinutes(10));
                 log.info("Total Message in Redis : {}", getChatMessages(redisKey));
