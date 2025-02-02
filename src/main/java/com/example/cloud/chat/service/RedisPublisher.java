@@ -21,7 +21,7 @@ public class RedisPublisher {
 
 
     public String createOrGetTopic(String studyName, LocalDateTime createdDate) {
-        String topicKey = "study:" + studyName + ":" + createdDate.toLocalDate();
+        String topicKey = "study:" + studyName + ":" + createdDate.toLocalDate().toString();
 
         return topicCache.computeIfAbsent(topicKey, key -> {
             ChannelTopic newTopic = new ChannelTopic(topicKey);
