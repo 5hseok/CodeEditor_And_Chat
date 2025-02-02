@@ -41,6 +41,7 @@ public class RedisSubscriber implements MessageListener {
             log.info("Received message: {}", publishMessage);
 
             ChatMessageDTO chatMessage = objectMapper.readValue(publishMessage, ChatMessageDTO.class);
+            log.info("Chat message received: {}", chatMessage);
             messagingTemplate.convertAndSend("/subscribe/chat/room/" + chatMessage.getStudyName(), chatMessage);
             log.info("Message [{}] sent to WebSocket subscribers", chatMessage.getMessage());
 
