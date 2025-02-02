@@ -38,6 +38,19 @@ public class ChatHistoryService {
         // MongoDB에서 특정 studyName과 selectDate 토픽 정보를 가지는 채팅방 정보와 채팅방 내역을 조회
         String chatRoomName = "study:" + studyName + ":" + selectDate; // 채팅방 ID 조합
 
+        //만약 selectDate가 24시간 이내라면 Redis에서 채팅 내역을 조회
+        if (selectDate.equals(LocalDate.now().toString())) {
+            // Redis에서 특정 studyName과 selectDate 토픽 정보를 가지는 채팅방 정보와 채팅방 내역을 조회
+            List<Object> chatMessages = redisTemplate.opsForList().range("chat:" + studyName + ":" + selectDate, 0, -1);
+            log.info("Total Message in Redis : {}", chatMessages);
+            if (chatMessages != null && !chatMessages.isEmpty()) {
+                return ChatHistoryResponseDTO.builder()
+                        .chatHistory(chatMessages)
+                        .build();
+            }
+        }
+
+        log.info("No chat messages found in Redis");
         // MongoDB에서 채팅방 정보 조회
         log.info("Getting chat room info for room: {}", chatRoomName);
         MongoChatRoom mongoChatRoom = mongoChatRoomRepository.findByChatRoomName(chatRoomName)
@@ -61,17 +74,7 @@ public class ChatHistoryService {
 
         log.info("Chat room info: {}", mongoChatRoom);
 
-        //만약 selectDate가 24시간 이내라면 Redis에서 채팅 내역을 조회
-            // Redis에서 특정 studyName과 selectDate 토픽 정보를 가지는 채팅방 정보와 채팅방 내역을 조회
-                List<Object> chatMessages = redisTemplate.opsForList().range("chat:" + studyName + ":" + selectDate, 0, -1);
-                log.info("Total Message in Redis : {}", chatMessages);
-                if (chatMessages != null && !chatMessages.isEmpty()) {
-                    return ChatHistoryResponseDTO.builder()
-                            .chatHistory(chatMessages)
-                            .build();
-                }
 
-                log.info("No chat messages found in Redis");
 
             try {
                 // 해당 채팅방의 채팅 내역을 MongoDB에서 조회
