@@ -45,7 +45,7 @@ public class RedisConfig {
                 .registerModule(new JavaTimeModule())  // Java 8 날짜/시간 지원
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);  // 타임스탬프 대신 ISO 형식 사용
 //         새로운 생성자 방식으로 ObjectMapper 적용
-        Jackson2JsonRedisSerializer<String> serializer = new Jackson2JsonRedisSerializer<>(objectMapper, String.class);
+        Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(objectMapper, Object.class);
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(serializer);
