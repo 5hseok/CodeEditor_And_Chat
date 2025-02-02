@@ -57,5 +57,6 @@ jobs:
               docker run -d \
               --name spring_app \
               -p 8080:8080 \
+              -n app_network \
               jwj9127/test:0.0.1
           EOF
