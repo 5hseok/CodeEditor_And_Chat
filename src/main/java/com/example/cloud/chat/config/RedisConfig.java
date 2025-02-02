@@ -41,11 +41,11 @@ public class RedisConfig {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(connectionFactory);
         // Jackson ObjectMapper 설정 (LocalDateTime 지원 추가)
-//        ObjectMapper objectMapper = new ObjectMapper()
-//                .registerModule(new JavaTimeModule())  // Java 8 날짜/시간 지원
-//                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);  // 타임스탬프 대신 ISO 형식 사용
-        // 새로운 생성자 방식으로 ObjectMapper 적용
-        Jackson2JsonRedisSerializer<String> serializer = new Jackson2JsonRedisSerializer<>(String.class);
+        ObjectMapper objectMapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule())  // Java 8 날짜/시간 지원
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);  // 타임스탬프 대신 ISO 형식 사용
+//         새로운 생성자 방식으로 ObjectMapper 적용
+        Jackson2JsonRedisSerializer<String> serializer = new Jackson2JsonRedisSerializer<>(objectMapper, String.class);
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(serializer);
